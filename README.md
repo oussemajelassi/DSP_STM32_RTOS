@@ -30,3 +30,13 @@ As A first Application that combines FreeRTOS and DSP I will implement this :
 ![image](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/fcd71c47-dbad-4073-900a-6dd00fdcd4df)
 
 
+
+### NEXT : 
+#### Using the DAC to implement an audio player
+**Description** : 
+The purpose of this demonstration is to provide an audio player solution based on STM32
+products to play .WAV files. The approach is optimized to use a minimum number of
+external components, and offers to end-users the possibility of using their own .WAV files.
+The audio files are stored in a microSD memory card, accessible by the STM32 through the
+SPI bus
+
