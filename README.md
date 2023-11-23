@@ -26,3 +26,7 @@ First Results are shown below , for a static Sine Wave that i ganerated with C C
 
 ![RFFT Running on the STM32](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/8483ebe9-b994-4fdb-a531-df69acfb0968)
 
+As A first Application that combines FreeRTOS and DSP I will implement this : 
+![image](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/fcd71c47-dbad-4073-900a-6dd00fdcd4df)
+
+
