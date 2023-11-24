@@ -33,9 +33,7 @@ CPP + CMSIS_DSP troubleshooting :
 
 I faced a compiling progam when I wanted to use CMSIS_DSP inside a C++ Source Code, 
 
-I followed this github issue to solve the problem : 
-
-![CMSIS_DSP C++](https://github.com/ARM-software/CMSIS_5/issues/617) 
+I followed this github issue to solve the problem :  [CMSIS_DSP C++](https://github.com/ARM-software/CMSIS_5/issues/617) 
 
 
 ### NEXT : 
