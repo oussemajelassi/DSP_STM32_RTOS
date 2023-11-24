@@ -29,6 +29,13 @@ First Results are shown below , for a static Sine Wave that i ganerated with C C
 As A first Application that combines FreeRTOS and DSP I will implement this : 
 ![image](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/fcd71c47-dbad-4073-900a-6dd00fdcd4df)
 
+CPP + CMSIS_DSP troubleshooting : 
+
+I faced a compiling progam when I wanted to use CMSIS_DSP inside a C++ Source Code, 
+
+I followed this github issue to solve the problem : 
+
+![CMSIS_DSP C++](https://github.com/ARM-software/CMSIS_5/issues/617) 
 
 
 ### NEXT : 
