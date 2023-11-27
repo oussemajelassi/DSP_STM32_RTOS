@@ -62,16 +62,11 @@ double DoubleBuffer::ComputeAvg( void )
  */
 DSP_SignalSpecs DoubleBuffer::Compute_SignalSpecs( void )
 {
-	float32_t FFT_InputBuffer [ this->Size ] ;
 	float32_t FFT_OutputBuffer[ this->Size ] ;
 	float32_t PeakHz = 0 ;
 	DSP_SignalSpecs DSP_CurrentSignalSpecs ;
 	float32_t PeakVal = 0 ;
-	for ( uint32_t cnt = 0 ; cnt < this->Size ; cnt ++  )
-	{
-		FFT_InputBuffer [ cnt ] = this->CurrentBuffer.at(cnt);
-	}
-	arm_rfft_fast_f32(&DSP_FFT_Handle, FFT_InputBuffer, FFT_OutputBuffer, 0 ) ;
+	arm_rfft_fast_f32(&DSP_FFT_Handle, this->CurrentBuffer.data(), FFT_OutputBuffer, 0 ) ;
 
 	for ( uint32_t freqIndex = 0 ; freqIndex < ( this->Size / 2 ) ; freqIndex ++ )
 	{
