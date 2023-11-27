@@ -15,8 +15,10 @@
 #include "task.h"
 #include "cmsis_os.h"
 #include "arm_math.h"
-
-
+#include "main.h"
+/*  Function Prototypes Begin  */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) ;
+/*  Function Prototypes End  */
 typedef struct
 {
 	float32_t DC_Offset ;
@@ -41,7 +43,7 @@ public :
 	void InsertData ( float32_t Data ) ;
 	bool GetCurrentBufferState ( void ) ;
 	void SetCurrentBufferState ( bool State ) ;
-	DSP_SignalSpecs Compute_DCOffset ( void ) ;
+	DSP_SignalSpecs Compute_SignalSpecs ( void ) ;
 };
 
 #endif /* INC_DOUBLEBUFFERING_H_ */

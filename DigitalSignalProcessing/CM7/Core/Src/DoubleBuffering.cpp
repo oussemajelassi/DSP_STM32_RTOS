@@ -11,7 +11,7 @@
 
 extern TaskHandle_t DSP_TaskHandle ;
 extern arm_rfft_fast_instance_f32 DSP_FFT_Handle ;
-
+extern ADC_HandleTypeDef hadc3;
 DoubleBuffer::DoubleBuffer ( uint32_t Size , uint32_t SamplingTime )
 {
 	this->NextBuffer.resize(0) ;
@@ -26,7 +26,10 @@ DoubleBuffer::~DoubleBuffer ( void )
 	this->NextBuffer.clear() ;
 	this->CurrentBuffer.clear() ;
 }
-
+/*
+ * Brief : Swap Function Will not Alert The Other Task
+ * Maybe I will be adding mechanism to make a choice.
+ */
 void DoubleBuffer::Swap ( void )
 {
 	this->CurrentBuffer.swap(this->NextBuffer) ;
@@ -57,7 +60,7 @@ double DoubleBuffer::ComputeAvg( void )
 /*
  * Brief : This Function uses CMSIS DSP to Compute FFT and then Takes DC Offset out of it
  */
-DSP_SignalSpecs DoubleBuffer::Compute_DCOffset( void )
+DSP_SignalSpecs DoubleBuffer::Compute_SignalSpecs( void )
 {
 	float32_t FFT_InputBuffer [ this->Size ] ;
 	float32_t FFT_OutputBuffer[ this->Size ] ;
@@ -116,3 +119,6 @@ void DoubleBuffer::SetCurrentBufferState ( bool State )
 {
 	this->CurrentBufferReady = State ;
 }
+
+
+
