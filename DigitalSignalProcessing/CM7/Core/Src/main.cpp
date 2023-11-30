@@ -40,8 +40,7 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-#define DSP_FFT_SIZE 32
-#define DSP_SAMPLING_TIME 1000
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,6 +55,7 @@ DAC_HandleTypeDef hdac1;
 DMA_HandleTypeDef hdma_dac1_ch1;
 
 TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim2;
 
 /* Definitions for SignalGeneratio */
 osThreadId_t SignalGeneratioHandle;
@@ -66,10 +66,12 @@ const osThreadAttr_t SignalGeneratio_attributes = {
 };
 /* USER CODE BEGIN PV */
 DoubleBuffer DSP_DoubleBuffer ( DSP_FFT_SIZE , DSP_SAMPLING_TIME ) ;
-
+DSP_SignalSpecs DSP_CurrentSignalSpecs ;
+uint8_t DSP_InputBufferFull = 0  ;
 TaskHandle_t DSP_TaskHandle ;
 float32_t DSP_INPUT_BUFFER [ DSP_FFT_SIZE ] ;
-
+float32_t FFT_OutputBuffer[ DSP_FFT_SIZE ] ;
+float32_t FFT_Magnitude [ DSP_FFT_SIZE ] ;
 arm_rfft_fast_instance_f32 DSP_FFT_Handle ;
 /* USER CODE END PV */
 
@@ -80,6 +82,7 @@ static void MX_DMA_Init(void);
 static void MX_DAC1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_ADC3_Init(void);
+static void MX_TIM2_Init(void);
 void vGeneration(void *argument);
 
 /* USER CODE BEGIN PFP */
@@ -130,10 +133,15 @@ int main(void)
 	MX_DAC1_Init();
 	MX_TIM1_Init();
 	MX_ADC3_Init();
+	MX_TIM2_Init();
 	/* USER CODE BEGIN 2 */
 	arm_rfft_fast_init_f32(&DSP_FFT_Handle, DSP_FFT_SIZE ) ;
+	HAL_ADCEx_Calibration_Start(&hadc3, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) ;
 	HAL_ADC_Start_IT(&hadc3) ;
-	HAL_TIM_OC_Start( &htim1 , TIM_CHANNEL_1 ) ;
+
+	HAL_TIM_PWM_Start( &htim1 , TIM_CHANNEL_1 ) ;
+	HAL_TIM_PWM_Start( &htim2 , TIM_CHANNEL_1) ;
+	TIM2->CCR1 = ( TIM2->ARR / 2 ) ;
 
 	/* USER CODE END 2 */
 
@@ -263,7 +271,7 @@ static void MX_ADC3_Init(void)
 	/** Common config
 	 */
 	hadc3.Instance = ADC3;
-	hadc3.Init.Resolution = ADC_RESOLUTION_16B;
+	hadc3.Init.Resolution = ADC_RESOLUTION_10B;
 	hadc3.Init.ScanConvMode = ADC_SCAN_DISABLE;
 	hadc3.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
 	hadc3.Init.LowPowerAutoWait = DISABLE;
@@ -366,7 +374,7 @@ static void MX_TIM1_Init(void)
 	htim1.Instance = TIM1;
 	htim1.Init.Prescaler = 0;
 	htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-	htim1.Init.Period = 64000 - 1 ;
+	htim1.Init.Period = 16000 - 1 ;
 	htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	htim1.Init.RepetitionCounter = 0;
 	htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -423,6 +431,65 @@ static void MX_TIM1_Init(void)
 }
 
 /**
+ * @brief TIM2 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_TIM2_Init(void)
+{
+
+	/* USER CODE BEGIN TIM2_Init 0 */
+
+	/* USER CODE END TIM2_Init 0 */
+
+	TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+	TIM_MasterConfigTypeDef sMasterConfig = {0};
+	TIM_OC_InitTypeDef sConfigOC = {0};
+
+	/* USER CODE BEGIN TIM2_Init 1 */
+
+	/* USER CODE END TIM2_Init 1 */
+	htim2.Instance = TIM2;
+	htim2.Init.Prescaler = 0;
+	htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+	htim2.Init.Period = 64000 - 1 ;
+	htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+	if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+	if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	sConfigOC.OCMode = TIM_OCMODE_PWM1;
+	sConfigOC.Pulse = 0;
+	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+	if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	/* USER CODE BEGIN TIM2_Init 2 */
+
+	/* USER CODE END TIM2_Init 2 */
+	HAL_TIM_MspPostInit(&htim2);
+
+}
+
+/**
  * Enable DMA controller clock
  */
 static void MX_DMA_Init(void)
@@ -453,10 +520,10 @@ static void MX_GPIO_Init(void)
 	__HAL_RCC_GPIOE_CLK_ENABLE();
 
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
 
-	/*Configure GPIO pin : PE1 */
-	GPIO_InitStruct.Pin = GPIO_PIN_1;
+	/*Configure GPIO pins : PE0 PE1 */
+	GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -483,7 +550,6 @@ void DSP_InputBuffer_Init ( int size )
 void vDSP_fft (void *argument)
 {
 	uint32_t Recieved_Notification ;
-	DSP_SignalSpecs DSP_CurrentSignalSpecs ;
 	for(;;)
 	{
 		Recieved_Notification = ulTaskNotifyTake(pdTRUE ,portMAX_DELAY ) ;
@@ -496,13 +562,14 @@ void vDSP_fft (void *argument)
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-	float32_t adc_Value = HAL_ADC_GetValue(& hadc3 ) ;
+	float32_t adc_Value =  HAL_ADC_GetValue(& hadc3 )   ;
 	DSP_DoubleBuffer.InsertData(adc_Value) ;
 	if ( DSP_DoubleBuffer.GetCurrentBufferState() )
 	{
 		DSP_DoubleBuffer.NotifyComputaionTask() ;
 		DSP_DoubleBuffer.SetCurrentBufferState(false) ;
 	}
+
 }
 /* USER CODE END 4 */
 
