@@ -7,7 +7,11 @@
 
 #ifndef INC_DOUBLEBUFFERING_H_
 #define INC_DOUBLEBUFFERING_H_
+
+
 #define ARM_MATH_CM7
+#define DSP_FFT_SIZE 	   1024
+#define DSP_SAMPLING_TIME  4000
 
 #include <vector>
 #include "stdint.h"
@@ -16,6 +20,8 @@
 #include "cmsis_os.h"
 #include "arm_math.h"
 #include "main.h"
+
+
 /*  Function Prototypes Begin  */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) ;
 /*  Function Prototypes End  */
@@ -28,7 +34,7 @@ typedef struct
 class DoubleBuffer
 {
 private :
-	uint8_t FreeSpace ;
+	uint32_t FreeSpace ;
 	uint32_t Size ;
 	bool CurrentBufferReady = false ;
 	std::vector <float32_t> CurrentBuffer ;

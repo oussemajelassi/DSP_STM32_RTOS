@@ -8,10 +8,11 @@
 
 
 #include "DoubleBuffering.h"
-
 extern TaskHandle_t DSP_TaskHandle ;
 extern arm_rfft_fast_instance_f32 DSP_FFT_Handle ;
 extern ADC_HandleTypeDef hadc3;
+extern float32_t FFT_OutputBuffer[ DSP_FFT_SIZE ] ;
+extern float32_t FFT_Magnitude [ DSP_FFT_SIZE ] ;
 DoubleBuffer::DoubleBuffer ( uint32_t Size , uint32_t SamplingTime )
 {
 	this->NextBuffer.resize(0) ;
@@ -62,23 +63,16 @@ double DoubleBuffer::ComputeAvg( void )
  */
 DSP_SignalSpecs DoubleBuffer::Compute_SignalSpecs( void )
 {
-	float32_t FFT_OutputBuffer[ this->Size ] ;
 	float32_t PeakHz = 0 ;
+	uint32_t Index = 0 ;
 	DSP_SignalSpecs DSP_CurrentSignalSpecs ;
-	float32_t PeakVal = 0 ;
-	arm_rfft_fast_f32(&DSP_FFT_Handle, this->CurrentBuffer.data(), FFT_OutputBuffer, 0 ) ;
 
-	for ( uint32_t freqIndex = 0 ; freqIndex < ( this->Size / 2 ) ; freqIndex ++ )
-	{
-		PeakVal = \
-		sqrtf ( FFT_OutputBuffer [ 2 * freqIndex ] * FFT_OutputBuffer [ 2 * freqIndex ] \
-		+ FFT_OutputBuffer [ 2 * freqIndex + 1 ] * FFT_OutputBuffer [ 2 * freqIndex + 1 ] ) ;
-		if  ( PeakVal > PeakHz )
-		{
-			PeakHz = PeakVal ;
-		}
-	}
-	DSP_CurrentSignalSpecs.DC_Offset = FFT_OutputBuffer [0] ;
+	arm_rfft_fast_f32(&DSP_FFT_Handle, this->CurrentBuffer.data(), FFT_OutputBuffer , 0 ) ;
+	arm_cmplx_mag_f32(FFT_OutputBuffer , FFT_Magnitude , DSP_FFT_SIZE / 2);
+	DSP_CurrentSignalSpecs.DC_Offset = FFT_Magnitude [0] ;
+	FFT_Magnitude [0] = 0 ;
+	arm_max_f32(FFT_Magnitude, DSP_FFT_SIZE / 2, &PeakHz, &Index);
+	PeakHz = ( DSP_SAMPLING_TIME * Index ) /  DSP_FFT_SIZE ;
 	DSP_CurrentSignalSpecs.Fundamental_Freq = PeakHz ;
 
 	return ( DSP_CurrentSignalSpecs ) ;
