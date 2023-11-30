@@ -38,7 +38,7 @@ I faced a compiling progam when I wanted to use CMSIS_DSP inside a C++ Source Co
 I followed this github issue to solve the problem :  [CMSIS_DSP C++](https://github.com/ARM-software/CMSIS_5/issues/617) 
 
 There Will be a slight change in the architecture the ADC Task wont be the one directly accessing ADC Instead it will only be filling the Double Buffer since It cannot reach the sampling time with ordianry tasks.
-So, I will Use a [Timer Triggered ADC](https://community.st.com/t5/stm32-mcus/using-timers-to-trigger-adc-conversions-periodically/ta-p/49889).
+So, I will Use a [Timer Triggered ADC](https://community.st.com/t5/stm32-mcus/using-timers-to-trigger-adc-conversions-periodically/ta-p/49889)., Also this [ST Video](https://www.youtube.com/watch?v=Yt5cHkmtqlA) is very helpful 
 
 ### NEXT : 
 #### Using the DAC to implement an audio player
