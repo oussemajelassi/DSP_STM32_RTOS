@@ -45,7 +45,8 @@ So, I will Use a [Timer Triggered ADC](https://community.st.com/t5/stm32-mcus/us
 After Computing Signal Specs with Corressponging CMSIS Funcions, We managed to queue Final results into another Task, This Task will generate a Sine Whos Frequency is the sama as INPUT Signal.
 This Task will be functionning based on a finite state machine.
 
-![signal jpg drawio](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/6af6f124-bf81-4940-9cb1-028197efed69).
+![signal jpg](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/2ccb5fe7-d5b0-4623-a5c8-4e16b8b912ed)
+
 
 
 ### NEXT : 
