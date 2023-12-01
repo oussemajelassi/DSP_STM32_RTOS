@@ -20,6 +20,7 @@
 #include "cmsis_os.h"
 #include "arm_math.h"
 #include "main.h"
+#include "math.h"
 
 
 /*  Function Prototypes Begin  */
