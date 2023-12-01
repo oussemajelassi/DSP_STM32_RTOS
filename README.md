@@ -38,7 +38,16 @@ I faced a compiling progam when I wanted to use CMSIS_DSP inside a C++ Source Co
 I followed this github issue to solve the problem :  [CMSIS_DSP C++](https://github.com/ARM-software/CMSIS_5/issues/617) 
 
 There Will be a slight change in the architecture the ADC Task wont be the one directly accessing ADC Instead it will only be filling the Double Buffer since It cannot reach the sampling time with ordianry tasks.
-So, I will Use a [Timer Triggered ADC](https://community.st.com/t5/stm32-mcus/using-timers-to-trigger-adc-conversions-periodically/ta-p/49889)., Also this [ST Video](https://www.youtube.com/watch?v=Yt5cHkmtqlA) is very helpful 
+So, I will Use a [Timer Triggered ADC](https://community.st.com/t5/stm32-mcus/using-timers-to-trigger-adc-conversions-periodically/ta-p/49889)., Also this [ST Video](https://www.youtube.com/watch?v=Yt5cHkmtqlA) is very helpful.
+
+### Signal Generation : 
+
+After Computing Signal Specs with Corressponging CMSIS Funcions, We managed to queue Final results into another Task, This Task will generate a Sine Whos Frequency is the sama as INPUT Signal.
+This Task will be functionning based on a finite state machine.
+
+![signal jpg](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/2ccb5fe7-d5b0-4623-a5c8-4e16b8b912ed)
+
+
 
 ### NEXT : 
 #### Using the DAC to implement an audio player
