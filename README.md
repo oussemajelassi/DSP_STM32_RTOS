@@ -46,6 +46,15 @@ After Computing Signal Specs with Corressponging CMSIS Funcions, We managed to q
 This Task will be functionning based on a finite state machine.
 
 ![signal jpg](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/2ccb5fe7-d5b0-4623-a5c8-4e16b8b912ed)
+ 
+ So INPUT Signal will be a pwm which frequency is 1000HZ : 
+ 
+ ![Uploading IMG_20231129_190248.jpg…]()
+
+
+ After All computation and RealTime Pipeline results are there : 
+ 
+ ![IMG_20231205_185031](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/077015f9-a41c-409d-95ba-0d85db5791e0)
 
 
 
