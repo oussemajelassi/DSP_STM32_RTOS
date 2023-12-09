@@ -1,4 +1,4 @@
-![IMG_20231129_190248](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/047ff349-5d89-437b-a1df-b4c5d1f41f53)# DSP_STM32_RTOS
+# DSP_STM32_RTOS
 This Repo will follow me trying to get a mix up between Real Time techniques and some DSP on the STM32H745ZI ..
 
 **References** :
