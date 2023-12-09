@@ -1,4 +1,4 @@
-# DSP_STM32_RTOS
+![IMG_20231129_190248](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/047ff349-5d89-437b-a1df-b4c5d1f41f53)# DSP_STM32_RTOS
 This Repo will follow me trying to get a mix up between Real Time techniques and some DSP on the STM32H745ZI ..
 
 **References** :
@@ -49,8 +49,7 @@ This Task will be functionning based on a finite state machine.
  
  So INPUT Signal will be a pwm which frequency is 1000HZ : 
  
- ![Uploading IMG_20231129_190248.jpg…]()
-
+![IMG_20231129_190248](https://github.com/oussemajelassi/DSP_STM32_RTOS/assets/100140668/1e0e8457-92c8-4cec-9087-fd26e41a7136)
 
  After All computation and RealTime Pipeline results are there : 
  
